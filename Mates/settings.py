@@ -95,8 +95,11 @@ ASGI_APPLICATION = 'Mates.asgi.application'
 #     }
 # }
 
+db_url = os.environ.get('POSTGRESQL_ADDON_URI')
+
 DATABASES = {
     'default': dj_database_url.config(
+        default=db_url, 
         conn_max_age=600,
         ssl_require=True
     )
