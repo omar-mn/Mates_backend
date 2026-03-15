@@ -158,9 +158,9 @@ SITE_ID = 2
 # CHANNELS
 
 CHANNEL_LAYERS = {
-    'defualt': {
-        'BACKEND':'channels.layers,InMemoryChannelLayer'
-    }
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer",
+    },
 }
 
 # Password validation
