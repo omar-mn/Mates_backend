@@ -84,26 +84,26 @@ ASGI_APPLICATION = 'Mates.asgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.postgresql",
-#         "NAME": "b2gj6jiyrj3q5lqg885e",
-#         "USER": "u5fbl3kt0xxuspa5jeod",
-#         "PASSWORD": "2i4lNjYcQYrpy7JhBKKuaFc4l1BpF0",
-#         "HOST": "b2gj6jiyrj3q5lqg885e-postgresql.services.clever-cloud.com",
-#         "PORT": "50013",
-#     }
-# }
-
-db_url = os.environ.get('POSTGRESQL_ADDON_URI')
-
 DATABASES = {
-    'default': dj_database_url.config(
-        default=db_url, 
-        conn_max_age=600,
-        ssl_require=True
-    )
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "b2gj6jiyrj3q5lqg885e",
+        "USER": "u5fbl3kt0xxuspa5jeod",
+        "PASSWORD": "2i4lNjYcQYrpy7JhBKKuaFc4l1BpF0",
+        "HOST": "b2gj6jiyrj3q5lqg885e-postgresql.services.clever-cloud.com",
+        "PORT": "50013",
+    }
 }
+
+# db_url = os.environ.get('POSTGRESQL_ADDON_URI')
+
+# DATABASES = {
+#     'default': dj_database_url.config(
+#         default=db_url, 
+#         conn_max_age=600,
+#         ssl_require=True
+#     )
+# }
 
 
 #custom user model
@@ -143,6 +143,7 @@ REST_AUTH = {
     'USER_DETAILS_SERIALIZER': 'Users.serializers.UserInfo',
     'USE_JWT': True,
     'JWT_AUTH_COOKIE': 'jwt-auth',
+    'USER_DETAILS_SERIALIZER': 'Users.serializers.CustomUserDetailsSerializer',
 }
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
@@ -205,3 +206,4 @@ STATICFILES_DIRS = [
 MEDIA_URL = 'media/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR , 'media')
+

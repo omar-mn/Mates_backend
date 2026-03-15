@@ -3,10 +3,10 @@ from . import views
 
 
 urlpatterns = [
-    path('create/' , views.CreateRoom),
     path('' , views.AvailbleRooms),
-    path('modify/<int:pk>/', views.EditRoom),
-    path('membership/<int:pk>/' , views.JoinRoom)
+    path('create/' , views.Createroom),
+    path('modify/<int:pk>/', views.RoomModify),
+    path('join/<int:pk>/' , views.JoinRoom)
 ]
 
 """
@@ -15,5 +15,5 @@ urlpatterns = [
     ==> api/rooms/              (all rooms)
     ==> api/rooms/create/       (add room)
     ==> api/rooms/modify/       (modify room)
-    ==> api/rooms/membership/   (joinnnnnn)
+    ==> api/rooms/join/   (joinnnnnn)
 """

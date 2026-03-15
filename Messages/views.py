@@ -1,61 +1,81 @@
-from django.shortcuts import render
 from rest_framework.decorators import api_view , permission_classes
-from rest_framework.permissions import IsAuthenticated , AllowAny
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from Rooms.models import Room
 from .serializers import MessageSerializer , ModMessageSerializer
-from Rooms.models import MemberShip
 from .models import Message
+from Mates.permissions import IsMessageOwner , IsRoomMember , CanDeleteMessage
+from rest_framework.pagination import PageNumberPagination
+
+
+# ROOM MESSAGES
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated , IsRoomMember])
+def Messages(request , pk):
+
+    try:
+        room = Room.objects.get(pk = pk)
+    except Room.DoesNotExist:
+        return Response({"error" : "this room doesnt exist"})
+    
+    messages = Message.objects.filter(room = room).order_by("sent_at")
+    pagintaor = PageNumberPagination()
+    pagintaor.page_size = 30
+    queryset = pagintaor.paginate_queryset(messages,request)
+    serializer = MessageSerializer(queryset , many=True , context={"request": request})
+    return Response(serializer.data)
+
+
+# SEND MESSAGE
 
 @api_view(['POST'])
-@permission_classes([IsAuthenticated])
+@permission_classes([IsAuthenticated , IsRoomMember])
 def CreateMessage(request , pk):
 
     try:
         room = Room.objects.get(pk = pk)
-    except:
+    except Room.DoesNotExist:
         return Response({"error" : "this room doesnt exist"})
     
-    Mes = MemberShip.objects.filter(user = request.user , room = room).first()
-    if Mes:
-        if Mes.leftDate is None:
-            serializer = MessageSerializer( data = request.data , context = {"request": request , "Room":room })
-            if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data)
-            else:
-                return Response(serializer.errors)
-        else:
-            return Response({"you are not a member of thid room!"})
+    serializer = MessageSerializer( data = request.data , context = {"request": request , "Room":room })
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data)
     else:
-        return Response({"you are not a member of thid room!"})
+        return Response(serializer.errors)
     
 
-@api_view(['PUT' , 'DELETE'])
-@permission_classes([IsAuthenticated])
+
+# MOD MESSAGE
+
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated , IsMessageOwner , IsRoomMember])
 def ModMessage(request , pkR , pkM):
 
     try:
-        message = Message.objects.get(pk = pkM)
-        room = Room.objects.get(pk = pkR)
-    except:
+        message = Message.objects.get(pk = pkM , room_id = pkR)
+    except Message.DoesNotExist:
         return Response({"eorro" : "this message doesnt exist"})
     
-    if request.method == 'PUT':
-        if request.user == message.user:
-            serializer = ModMessageSerializer(message , data = request.data , partial=True)
-            if serializer.is_valid():
-                serializer.save()
-                return Response({"message edited"})
-            else:
-                return Response(serializer.errors)
-        else:
-            return Response({"you can't edite this message!"})
-        
-    if request.method == 'DELETE':
-        Mes = MemberShip.objects.filter(user = request.user , room = room).first()
-        if request.user == message.user or Mes.role == 'owner':
-            message.delete()
-            return Response({"message deleted"})
-        else:
-            return Response({"you can't delet this message!"})
+    serializer = ModMessageSerializer(message , data = request.data , partial=True)
+    if serializer.is_valid():
+        serializer.save()
+        return Response({"message edited"})
+    else:
+        return Response(serializer.errors)
+
+
+# DLETE MESSAGE
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated , CanDeleteMessage , IsRoomMember])
+def DelMessage(request , pkR , pkM):
+
+    try:
+        message = Message.objects.get(pk = pkM , room_id=pkR)
+    except (Message.DoesNotExist , Room.DoesNotExist):
+        return Response({"eorro" : "this message doesnt exist"})
+    
+    message.delete()
+    return Response({"message deleted"})

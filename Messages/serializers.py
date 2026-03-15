@@ -16,6 +16,7 @@ class MessageSerializer(serializers.ModelSerializer):
         message = Message.objects.create(user = user , room = room , **validated_data)
         return message
     
+
 class ModMessageSerializer(serializers.ModelSerializer):
 
     class Meta:
