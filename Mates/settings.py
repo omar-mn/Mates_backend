@@ -84,14 +84,25 @@ ASGI_APPLICATION = 'Mates.asgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.postgresql",
+#         "NAME": "b2gj6jiyrj3q5lqg885e",
+#         "USER": "u5fbl3kt0xxuspa5jeod",
+#         "PASSWORD": "2i4lNjYcQYrpy7JhBKKuaFc4l1BpF0",
+#         "HOST": "b2gj6jiyrj3q5lqg885e-postgresql.services.clever-cloud.com",
+#         "PORT": "50013",
+#     }
+# }
+
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "b2gj6jiyrj3q5lqg885e",
-        "USER": "u5fbl3kt0xxuspa5jeod",
-        "PASSWORD": "2i4lNjYcQYrpy7JhBKKuaFc4l1BpF0",
-        "HOST": "b2gj6jiyrj3q5lqg885e-postgresql.services.clever-cloud.com",
-        "PORT": "50013",
+        "NAME": "mates",
+        "USER": "postgres",
+        "PASSWORD": "kirigaya_kazut0",
+        "HOST": "localhost",
+        "PORT": "5432",
     }
 }
 

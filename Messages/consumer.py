@@ -1,8 +1,6 @@
 import json
-
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
-
 from Rooms.models import Room, MemberShip
 from .models import Message
 from .serializers import MessageSerializer
@@ -105,4 +103,4 @@ class MessageConsumer(AsyncWebsocketConsumer):
             content=content
         )
 
-        return MessageSerializer(message).data
+        return MessageSerializer(message, context={"request": None}).data

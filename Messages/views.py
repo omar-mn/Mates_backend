@@ -21,7 +21,7 @@ def Messages(request , pk):
     
     messages = Message.objects.filter(room = room).order_by("sent_at")
     pagintaor = PageNumberPagination()
-    pagintaor.page_size = 30
+    pagintaor.page_size = 100
     queryset = pagintaor.paginate_queryset(messages,request)
     serializer = MessageSerializer(queryset , many=True , context={"request": request})
     return Response(serializer.data)

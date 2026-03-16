@@ -6,7 +6,8 @@ urlpatterns = [
     path('' , views.AvailbleRooms),
     path('create/' , views.Createroom),
     path('modify/<int:pk>/', views.RoomModify),
-    path('join/<int:pk>/' , views.JoinRoom)
+    path('join/<int:pk>/' , views.JoinRoom),
+    path('room/<int:pk>/' , views.GetRoom),
 ]
 
 """
