@@ -22,7 +22,7 @@ class CustomUserDetailsSerializer(UserDetailsSerializer):
 
     class Meta(UserDetailsSerializer.Meta):
         model = account
-        fields = ('full_name', 'username' , 'email', 'first_name' , 'last_name' , 'profileImage' , 'profile_banner' )
+        fields = ('full_name', 'username' , 'email', 'first_name' , 'last_name' , 'profileImage' , 'profile_banner' , 'bio')
         read_only_fields = ('email', 'full_name')
 
     def get_full_name(self, obj):
