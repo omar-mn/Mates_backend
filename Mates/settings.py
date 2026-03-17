@@ -148,12 +148,12 @@ CORS_ALLOWED_ORIGINS = [
     'http://localhost:5173',
     "https://app-5cacd864-779f-4f64-a831-73e859e46fdc.cleverapps.io",
     "https://unisotropous-lauren-persuadably.ngrok-free.dev",
-    "https://app-5cacd864-779f-4f64-a831-73e859e46fdc.cleverapps.io/",
+    "https://app-5cacd864-779f-4f64-a831-73e859e46fdc.cleverapps.io",
 ]
 
 CSRF_TRUSTED_ORIGINS = [
     'https://unisotropous-lauren-persuadably.ngrok-free.dev/',
-    "https://app-5cacd864-779f-4f64-a831-73e859e46fdc.cleverapps.io/",
+    "https://app-5cacd864-779f-4f64-a831-73e859e46fdc.cleverapps.io",
 ]
 
 CORS_ALLOW_HEADERS = [
