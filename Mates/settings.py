@@ -1,6 +1,7 @@
 import dj_database_url
 from pathlib import Path
 import os
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -141,20 +142,28 @@ REST_FRAMEWORK = {
 #     # 'LEEWAY': 0,
 # }
 
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=1), 
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
+}
+
 #CORS
 
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3030',
     'http://localhost:5173',
-    "https://app-5cacd864-779f-4f64-a831-73e859e46fdc.cleverapps.io",
+    'http://localhost:5174',
     "https://unisotropous-lauren-persuadably.ngrok-free.dev",
     "https://app-5cacd864-779f-4f64-a831-73e859e46fdc.cleverapps.io",
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://unisotropous-lauren-persuadably.ngrok-free.dev/',
-    "https://app-5cacd864-779f-4f64-a831-73e859e46fdc.cleverapps.io",
+    'https://unisotropous-lauren-persuadably.ngrok-free.dev',
+    'https://app-5cacd864-779f-4f64-a831-73e859e46fdc.cleverapps.io',
 ]
+
 
 CORS_ALLOW_HEADERS = [
     "accept",
