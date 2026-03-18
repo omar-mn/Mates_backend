@@ -1,32 +1,36 @@
-from .models import Room , MemberShip
+from .models import Room , MemberShip , JoinRequest
 from rest_framework import serializers
 from Users.serializers import RoomUser
-from Messages.serializers import MessageSerializer
-from Messages.models import Message
+
 
 
 class ViewRooms(serializers.ModelSerializer):
-    is_member = serializers.SerializerMethodField()
-    owner = RoomUser(read_only=True)
+    is_member   = serializers.SerializerMethodField()
+    owner       = RoomUser(read_only=True)
+    members     = serializers.SerializerMethodField()
+    membersCount = serializers.SerializerMethodField()
 
     class Meta:
         model = Room
-        fields = ('id' , 'name' , 'description' , 'category' , 'owner' , 'is_member')
+        fields = ('id' , 'name' , 'description' , 'category' , 'is_member' , 'private' , 'membersCount' , 'owner' ,'members')
 
     def get_is_member(self,obj):
         user    = self.context['request'].user
         room    = obj
-        Mes     = MemberShip.objects.filter(user = user  , room = room).first()
-        if Mes :
-            if Mes.leftDate is None:
-                obj = True
-                return obj
-            else: 
-                obj = False
-                return obj
-        else:
-            obj = False
-            return obj
+        return MemberShip.objects.filter(
+            user             = user,
+            room             = room,
+            leftDate__isnull = True
+        ).exists()
+    
+    def get_members(self,obj):
+        MeS = MemberShip.objects.filter(room = obj.id , leftDate = None).order_by('joinDate')[:5]
+        members = Join_MS(MeS , many = True)
+        return members.data 
+    
+    def get_membersCount(self,obj):
+        MeS = MemberShip.objects.filter(room = obj.id , leftDate = None).count()
+        return MeS
 
 
 class CreateRoom(serializers.ModelSerializer):
@@ -35,7 +39,7 @@ class CreateRoom(serializers.ModelSerializer):
 
     class Meta:
         model = Room
-        fields = ('id','name' , 'description' , 'category' , 'owner')
+        fields = ('id','name' , 'description' , 'category' , 'owner' , 'private')
     
     def create(self, validated_data):
         user = self.context['request'].user
@@ -48,15 +52,21 @@ class RoomMod(serializers.ModelSerializer):
 
     owner       = RoomUser(read_only=True)
     members     = serializers.SerializerMethodField()
+    membersCount = serializers.SerializerMethodField()
+
 
     class Meta:
         model = Room
-        fields = ('id','name' , 'description' , 'category' , 'owner' , 'members')
+        fields = ('id','name' , 'description' , 'category' , 'private' , 'membersCount' , 'owner' , 'members')
 
     def get_members(self,obj):
         MeS = MemberShip.objects.filter(room = obj.id , leftDate = None)
         members = Join_MS(MeS , many = True)
-        return members.data 
+        return members.data
+    
+    def get_membersCount(self,obj):
+        MeS = MemberShip.objects.filter(room = obj.id , leftDate = None).count()
+        return MeS
 
 
 class Join_MS(serializers.ModelSerializer):
@@ -72,6 +82,13 @@ class Join_MS(serializers.ModelSerializer):
         MeS = MemberShip.objects.create(user = user , room = room , role = 'member' , **validated_data)
         return MeS
 
+
+
+class Request_Join(serializers.ModelSerializer):
+    user = RoomUser(read_only=True) 
+    class Meta:
+        model = JoinRequest
+        fields = ('id' , 'user' , 'room' , 'state')
 
 
 

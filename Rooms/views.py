@@ -1,13 +1,13 @@
 from django.shortcuts import render
 from rest_framework.decorators import permission_classes , api_view
 from rest_framework.permissions import AllowAny , IsAuthenticated
-from .serializers import CreateRoom , Join_MS ,ViewRooms , RoomMod
-from rest_framework.response import Response
-from .models import MemberShip , Room 
+from .serializers import CreateRoom , Join_MS ,ViewRooms , RoomMod , Request_Join
+from rest_framework.response import Response 
+from .models import MemberShip , Room , JoinRequest
 from rest_framework.pagination import PageNumberPagination
 from django.utils import timezone
-from Mates.permissions import IsRoomMember , CanManageRoom
-
+from Mates.permissions import IsRoomMember , CanManageRoom , IsNotRoomMember , IsNotOwner
+from rest_framework import status
 
 # ALL ROOMS
 
@@ -77,32 +77,110 @@ def RoomModify(request,pk):
 # JOIN ROOM
 
 @api_view(['POST'])
-@permission_classes([IsAuthenticated])
+@permission_classes([IsAuthenticated , IsNotRoomMember])
 def JoinRoom(request,pk):
-    
+
     try:
         room = Room.objects.get(pk = pk)
     except Room.DoesNotExist:
         return Response({"error" : "this room DoesNotExist ya broo"})
-
-    Mes = MemberShip.objects.filter(user = request.user  , room = room).first() 
-    if Mes:
-        if Mes.leftDate == None:
-            Mes.leftDate = timezone.now()
-            Mes.save()
-            return Response({"action" : "youe left this room"})
-        else:
+    
+    if not room.private:
+        Mes = MemberShip.objects.filter(user = request.user  , room = room).first() 
+        if Mes:
             Mes.leftDate = None
             Mes.save()
             return Response({"joined":"you are now a member of this room , have fun!"})
 
-    else:
-        serializer = Join_MS( data = request.data , context={"request": request,"room" : room} )
-        if serializer.is_valid():
-            serializer.save()
-            return Response({"joined":"you are now a member of this room , have fun!"})
+        else:
+            serializer = Join_MS( data = request.data , context={"request": request,"room" : room} )
+            if serializer.is_valid():
+                serializer.save()
+                return Response({"joined":"you are now a member of this room , have fun!"})
+            else :
+                return Response(serializer.errors)
+    else :
+        joinRequest = JoinRequest.objects.filter(user = request.user , room = room , state = 'pending').first()
+        if joinRequest:
+            return Response({"message": "you already requested to join this room"})
         else :
-            return Response(serializer.errors)
+            JoinRequest.objects.create(user = request.user , room = room)
+            return Response({"message": "join request sent"})
 
 
+# LEAVE ROOM 
 
+@api_view(['POST'])
+@permission_classes([IsAuthenticated , IsRoomMember , IsNotOwner])
+def LeaveRoom(request , pk):
+
+    try:
+        room = Room.objects.get(pk = pk)
+    except Room.DoesNotExist:
+        return Response({"error" : "this room DoesNotExist ya broo"})
+    
+    Mes = MemberShip.objects.filter(user = request.user  , room = room).first() 
+    if Mes:
+        Mes.leftDate = timezone.now()
+        Mes.save()
+        return Response({"message" : "you left this room"} , status=status.HTTP_200_OK)
+    else:
+        return Response({"message":"you are not a member of this room"} , status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
+
+
+# GET pending REQS
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated , CanManageRoom])
+def PendingRequests(request , pk):
+
+    try:
+        room = Room.objects.get(pk = pk)
+    except Room.DoesNotExist:
+        return Response({"error" : "this room DoesNotExist ya broo"})
+    
+    join_requests = JoinRequest.objects.filter(room=room, state='pending')
+    serializer = Request_Join(join_requests , many = True)
+    return Response(serializer.data)
+
+
+# OLD REQS
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated , CanManageRoom])
+def OldRequests(request,pk):
+
+    try:
+        room = Room.objects.get(pk = pk)
+    except Room.DoesNotExist:
+        return Response({"error" : "this room DoesNotExist ya broo"})
+    
+    old_requests = JoinRequest.objects.filter(room=room, state__in = ['accepted' , 'rejected'])
+    serializer = Request_Join(old_requests , many = True)
+    return Response(serializer.data)
+
+# ACCEPT OR REJECT REQ
+
+@api_view(['PUT' , 'PATCH'])
+@permission_classes([IsAuthenticated , CanManageRoom])
+def RequestHandle(request , pk , pk_req):
+    print(request.data)
+    try:
+        Jrequest = JoinRequest.objects.get(pk = pk_req)
+    except (Room.DoesNotExist, JoinRequest.DoesNotExist):
+        return Response({"error" : "this request or room DoesNotExist ya broo"})
+    
+    if Jrequest.state != 'pending':
+        return Response({"error": "this request has already been handled"}, status=400)
+    
+    serializer = Request_Join(Jrequest , data = request.data , partial = True)
+    if serializer.is_valid():
+        serializer.save()
+        reqState = serializer.instance.state
+        if reqState == 'accepted':
+            MemberShip.objects.get_or_create( user=Jrequest.user , room=Jrequest.room)
+            return Response({"message" : "request accepted"})
+        elif reqState == 'rejected':
+            return Response({"message" : "request rejected"})
+    else:
+        return Response(serializer.errors)

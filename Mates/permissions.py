@@ -25,6 +25,21 @@ class IsRoomMember(BasePermission):
             leftDate__isnull = True
         ).exists()
     
+# عكس اللي فوقيها
+class IsNotRoomMember(BasePermission):
+    messafe = "you are alredy a member of this room"
+    def has_permission(self, request, view):
+        pk = view.kwargs.get('pk')
+        try:
+            room = Room.objects.get(pk=pk)
+        except Room.DoesNotExist:
+            return False
+
+        return not MemberShip.objects.filter(
+            user=request.user,
+            room=room,
+            leftDate=None
+        ).exists()
 
 
 # ROOM OWNER
@@ -47,6 +62,29 @@ class CanManageRoom(BasePermission):
             user             =request.user,
             room             = room,
             role__in         = ['owner', 'admin'],
+            leftDate__isnull = True
+        ).exists()
+
+
+# عكس اللي فوقها برضو
+
+class IsNotOwner(BasePermission):
+    message = "you are the owner of this room"
+    def has_permission(self, request, view):
+        room_id = view.kwargs.get("pk") or view.kwargs.get("room_id") or view.kwargs.get("pkR")
+
+        if not room_id:
+            return False
+
+        try:
+            room = Room.objects.get(pk=room_id)
+        except Room.DoesNotExist:
+            return False
+
+        return not MemberShip.objects.filter(
+            user             = request.user,
+            room             = room,
+            role             = 'owner',
             leftDate__isnull = True
         ).exists()
 

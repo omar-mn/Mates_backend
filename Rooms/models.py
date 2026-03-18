@@ -18,6 +18,7 @@ class Room(models.Model):
         OTHER           = 'other'
 
     name                = models.CharField(max_length=50)
+    private             = models.BooleanField(default=False)
     description         = models.TextField(max_length=500 , blank=True , null=True , default="a Mates Room, join us!!")
     created_date        = models.DateTimeField(auto_now_add=True)
     user                = models.ManyToManyField('Users.account' , through='MemberShip')
@@ -48,3 +49,17 @@ class MemberShip(models.Model):
     leftDate            = models.DateTimeField(null=True, blank=True)
     role                = models.CharField(choices=Role.choices , default=Role.MEMBER , max_length=20)
 
+
+class JoinRequest(models.Model):
+    class reqState(models.TextChoices):
+        PENDING     = 'pending'
+        REJECTED    = 'rejected'
+        ACCEPTED    = 'accepted'
+        NULL        = 'null'
+
+    user                = models.ForeignKey('Users.account' ,on_delete=models.CASCADE)
+    room                = models.ForeignKey(Room , on_delete=models.CASCADE)
+    state               = models.CharField(choices=reqState.choices , default='pending' , max_length=20)
+
+    def __str__(self):
+        return self.user.username + ' ' + self.state
