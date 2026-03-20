@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework.decorators import permission_classes , api_view
 from rest_framework.permissions import AllowAny , IsAuthenticated
-from .serializers import CreateRoom , Join_MS ,ViewRooms , RoomMod , Request_Join
+from .serializers import CreateRoom , Join_MS ,ViewRooms , RoomMod , Request_Join , JoinedRoomsSerializer
 from rest_framework.response import Response 
 from .models import MemberShip , Room , JoinRequest
 from rest_framework.pagination import PageNumberPagination
@@ -52,7 +52,7 @@ def GetRoom(request,pk):
 
 # MDEIFY ROOM
 
-@api_view(['PUT', 'DELETE'])
+@api_view(['PUT', 'DELETE' , 'PATCH'])
 @permission_classes([IsAuthenticated , CanManageRoom])
 def RoomModify(request,pk):
     
@@ -61,7 +61,7 @@ def RoomModify(request,pk):
     except Room.DoesNotExist:
         return Response({"error" : "this room DoesNotExist ya broo"})
     
-    if request.method == 'PUT':
+    if request.method == 'PUT' or 'PATCH':
         serializer = RoomMod(room , data = request.data , partial=True)
         
         if serializer.is_valid():
@@ -106,7 +106,7 @@ def JoinRoom(request,pk):
         else :
             JoinRequest.objects.create(user = request.user , room = room)
             return Response({"message": "join request sent"})
-
+    
 
 # LEAVE ROOM 
 
@@ -140,7 +140,7 @@ def PendingRequests(request , pk):
         return Response({"error" : "this room DoesNotExist ya broo"})
     
     join_requests = JoinRequest.objects.filter(room=room, state='pending')
-    serializer = Request_Join(join_requests , many = True)
+    serializer    = Request_Join(join_requests , many = True)
     return Response(serializer.data)
 
 
@@ -164,7 +164,6 @@ def OldRequests(request,pk):
 @api_view(['PUT' , 'PATCH'])
 @permission_classes([IsAuthenticated , CanManageRoom])
 def RequestHandle(request , pk , pk_req):
-    print(request.data)
     try:
         Jrequest = JoinRequest.objects.get(pk = pk_req)
     except (Room.DoesNotExist, JoinRequest.DoesNotExist):
@@ -177,10 +176,55 @@ def RequestHandle(request , pk , pk_req):
     if serializer.is_valid():
         serializer.save()
         reqState = serializer.instance.state
+        Mes = MemberShip.objects.filter( user=Jrequest.user , room=Jrequest.room).first()
         if reqState == 'accepted':
-            MemberShip.objects.get_or_create( user=Jrequest.user , room=Jrequest.room)
-            return Response({"message" : "request accepted"})
+            if Mes:
+                Mes.leftDate = None
+                Mes.save()
+                return Response({"message" : "request accepted"})
+            else:
+                MemberShip.objects.create(user=Jrequest.user , room=Jrequest.room)
+                return Response({"message" : "request accepted"})
+            
         elif reqState == 'rejected':
             return Response({"message" : "request rejected"})
     else:
         return Response(serializer.errors)
+    
+
+# CANCEL REQUEST
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def DeleteRequest(request , pk):
+
+    try:
+        req = JoinRequest.objects.get(pk = pk)
+    except JoinRequest.DoesNotExist():
+        return Response({"message" : "this request Does Not Exist"} , status=status.HTTP_404_NOT_FOUND)
+    
+    if req.user != request.user:
+        return Response({"error" : "you can't cancel this request"} , status=status.HTTP_401_UNAUTHORIZED)
+
+    req.delete()
+    return Response({"message" : "request canceled"} , status=status.HTTP_202_ACCEPTED)
+
+
+# JOINED ROOMS (PROFILE)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def JoinedRooms(request):
+    rooms = MemberShip.objects.filter(user = request.user , leftDate = None)
+    serializer = JoinedRoomsSerializer(rooms , many = True)
+    return Response(serializer.data)
+
+
+# PENDING REQUESTS (PROFILE)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def PendingRequestsProfile(request):
+    requests = JoinRequest.objects.filter(user = request.user , state= 'pending')
+    serializer = Request_Join(requests , many = True)
+    return Response(serializer.data)

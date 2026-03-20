@@ -68,6 +68,8 @@ env.bak/
 venv.bak/
 
 Mates/envVariables*
+*/migrations/*
+
 
 .Mates/media/
 Mates/media/

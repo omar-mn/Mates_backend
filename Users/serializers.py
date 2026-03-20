@@ -4,7 +4,6 @@ from django.contrib.auth.hashers import make_password
 from dj_rest_auth.serializers import UserDetailsSerializer
 from rest_framework import serializers
 
-
 class RoomUser(serializers.ModelSerializer):
     class Meta:
         model = account
@@ -17,7 +16,6 @@ class ProfileSerializer(serializers.ModelSerializer):
         read_only_fields = (['email' , 'username'])
 
 class CustomUserDetailsSerializer(UserDetailsSerializer):
-    
     full_name = serializers.SerializerMethodField()
 
     class Meta(UserDetailsSerializer.Meta):
@@ -28,33 +26,14 @@ class CustomUserDetailsSerializer(UserDetailsSerializer):
     def get_full_name(self, obj):
         return f"{obj.first_name} {obj.last_name}".strip() or obj.username
 
-    # def update(self, instance, validated_data):
-    #     profile_data = validated_data.pop('userprofile', {})
-    #     instance = super().update(instance, validated_data)
 
-    #     if profile_data:
-    #         profile = instance.userprofile
-    #         for attr, value in profile_data.items():
-    #             setattr(profile, attr, value)
-    #         profile.save()
+class Profile(serializers.ModelSerializer):
+    full_name = serializers.SerializerMethodField()
 
-    #     return instance
+    class Meta:
+        model = account
+        fields = ('full_name', 'username' , 'first_name' , 'last_name' , 'profileImage' , 'profile_banner' , 'bio')
+        read_only_fields = ('email', 'full_name')
 
-####################################################################3
-
-# class Sign_UpSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = account
-#         fields = ('username' , 'email' , 'password' , 'first_name' , 'last_name' , 'profileImage')
-
-#     def create(self, validated_data):
-#         return account.objects.create(**validated_data)
-    
-#     def validate_password(self, value: str) -> str:
-#         return make_password(value)
-    
-
-# class JoinRoom(serializers.ModelSerializer):
-#     class Meta:
-#         model = account
-#         fields = ('join_room')
+    def get_full_name(self, obj):
+        return f"{obj.first_name} {obj.last_name}".strip() or obj.username

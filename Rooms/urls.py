@@ -11,7 +11,10 @@ urlpatterns = [
     path('room/<int:pk>/' , views.GetRoom),
     path('pendingrequsts/<int:pk>/' , views.PendingRequests),
     path('reqhandel/<int:pk>/<int:pk_req>/' , views.RequestHandle),
-    path('oldrequsts/<int:pk>/' , views.OldRequests)
+    path('oldrequsts/<int:pk>/' , views.OldRequests),
+    path('cancelrequest/<int:pk>/' , views.DeleteRequest),
+    path('joinedrooms/' , views.JoinedRooms),
+    path('pendingrequsts/' , views.PendingRequestsProfile),
 ]
 
 """

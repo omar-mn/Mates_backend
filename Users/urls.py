@@ -5,6 +5,7 @@ urlpatterns = [
     # auth 
     path('', include('dj_rest_auth.urls')),
     path('registration/', include('dj_rest_auth.registration.urls')),
+    path('profile/<int:pk>/' , views.GetProfile),
 ]
 
 

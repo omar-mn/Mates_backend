@@ -3,7 +3,7 @@ from rest_framework import serializers
 from Users.serializers import RoomUser
 
 
-
+# ALL ROOMS
 class ViewRooms(serializers.ModelSerializer):
     is_member   = serializers.SerializerMethodField()
     owner       = RoomUser(read_only=True)
@@ -33,6 +33,7 @@ class ViewRooms(serializers.ModelSerializer):
         return MeS
 
 
+# CREATE ROOM
 class CreateRoom(serializers.ModelSerializer):
     
     owner       = RoomUser(read_only=True)
@@ -48,6 +49,7 @@ class CreateRoom(serializers.ModelSerializer):
         return room
 
 
+# EDITE OR GET ROOM
 class RoomMod(serializers.ModelSerializer):
 
     owner       = RoomUser(read_only=True)
@@ -69,6 +71,7 @@ class RoomMod(serializers.ModelSerializer):
         return MeS
 
 
+# JOIN ROOM (MEMBER SHIP)
 class Join_MS(serializers.ModelSerializer):
     user = RoomUser(read_only=True)
     class Meta:
@@ -83,51 +86,39 @@ class Join_MS(serializers.ModelSerializer):
         return MeS
 
 
+# NESTED ROOMS FOR REQUESTS
 
+class roomREQ(serializers.ModelSerializer):
+    class Meta:
+        model = Room
+        fields = ('id', 'name' , 'category' , 'private')
+
+
+# REQUESTS
 class Request_Join(serializers.ModelSerializer):
+    room = roomREQ(read_only=True)
     user = RoomUser(read_only=True) 
     class Meta:
         model = JoinRequest
         fields = ('id' , 'user' , 'room' , 'state')
 
 
+# NESTED ROOMS FOR JOINED ROOMS
 
-##############################################################################
+class roomJOIN(serializers.ModelSerializer):
+    owner       = RoomUser(read_only=True)
+    membersCount = serializers.SerializerMethodField()
+    class Meta:
+        model = Room
+        fields = ('id', 'name' , 'category' , 'private' , 'membersCount' , 'owner')
+    
+    def get_membersCount(self,obj):
+        MeS = MemberShip.objects.filter(room = obj.id , leftDate = None).count()
+        return MeS
 
-# class MSserializer(serializers.ModelSerializer):
-#     model = MemberShip
-#     fields = ('user' , 'room' , 'role')
-
-# class RoomSerializer(serializers.ModelSerializer):
-#     owner = serializers.ReadOnlyField(source='owner.username')
-#     is_member = serializers.SerializerMethodField()
-#     role = serializers.SerializerMethodField()
-
-#     class Meta:
-#         model = Room
-#         fields = ('name' , 'description' , 'created_date' , 'owner' , 'category' , 'is_member' , 'role')
-
-#     def create(self, validated_data):
-#         MSserializer.save(user = self.owner , room = self , role = 'owner')
-#         return Room.objects.create(**validated_data)
-
-#     def get_is_member(self, obj):
-#         user = self.context['request'].user
-#         if not user.is_authenticated:
-#             return False
-#         return MemberShip.objects.filter(
-#             user=user,
-#             room=obj,
-#             leftDate__isnull=True
-#         ).exists()
-
-#     def get_role(self, obj):
-#         user = self.context['request'].user
-#         if not user.is_authenticated:
-#             return None
-#         ms = MemberShip.objects.filter(
-#             user=user,
-#             room=obj,
-#             leftDate__isnull=True
-#         ).first()
-        # return ms.role if ms else None
+# JOINED ROOMS
+class JoinedRoomsSerializer(serializers.ModelSerializer):
+    room = roomJOIN(read_only=True)
+    class Meta:
+        model  = MemberShip
+        fields = ('room' , 'role')

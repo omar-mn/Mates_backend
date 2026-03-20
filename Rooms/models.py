@@ -49,6 +49,9 @@ class MemberShip(models.Model):
     leftDate            = models.DateTimeField(null=True, blank=True)
     role                = models.CharField(choices=Role.choices , default=Role.MEMBER , max_length=20)
 
+    def __str__(self):
+        return self.user.username + ' ' + self.role
+
 
 class JoinRequest(models.Model):
     class reqState(models.TextChoices):

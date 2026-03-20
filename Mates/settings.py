@@ -1,20 +1,16 @@
+import os
 import dj_database_url
 from pathlib import Path
-import os
 from datetime import timedelta
-
+from .envVariables import DATABASES_env , SECRET_KEY_env , CORS_ALLOWED_ORIGINS_env , CSRF_TRUSTED_ORIGINS_env , CORS_ALLOW_HEADERS_env
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-gpooiwq9+a@xg)wm0zop%jf4iyncv(prcm5@a@cw^&sb62^#3h'
+SECRET_KEY = SECRET_KEY_env
 
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
@@ -81,44 +77,13 @@ TEMPLATES = [
 ]
 
 # WSGI_APPLICATION = 'Mates.wsgi.application'
+
 ASGI_APPLICATION = 'Mates.asgi.application'
 
 # Database
-# https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.postgresql",
-#         "NAME": "b2gj6jiyrj3q5lqg885e",
-#         "USER": "u5fbl3kt0xxuspa5jeod",
-#         "PASSWORD": "2i4lNjYcQYrpy7JhBKKuaFc4l1BpF0",
-#         "HOST": "b2gj6jiyrj3q5lqg885e-postgresql.services.clever-cloud.com",
-#         "PORT": "50013",
-#         'CONN_MAX_AGE': 60,
-#     }
-    
-# }
+DATABASES = DATABASES_env
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": "mates",
-        "USER": "postgres",
-        "PASSWORD": "kirigaya_kazut0",
-        "HOST": "localhost",
-        "PORT": "5432",
-    }
-}
-
-# db_url = os.environ.get('POSTGRESQL_ADDON_URI')
-
-# DATABASES = {
-#     'default': dj_database_url.config(
-#         default=db_url, 
-#         conn_max_age=600,
-#         ssl_require=True
-#     )
-# }
 
 
 #custom user model
@@ -134,15 +99,6 @@ REST_FRAMEWORK = {
     )
 }
 
-# SIMPLE_JWT = {
-#     'ALGORITHM': 'HS256', 
-#     'SIGNING_KEY': 'SECRET_KEY', 
-#     # 'AUDIENCE': None,
-#     # 'ISSUER': None,
-#     # 'JWK_URL': None,
-#     # 'LEEWAY': 0,
-# }
-
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=1), 
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
@@ -152,32 +108,12 @@ SIMPLE_JWT = {
 
 #CORS
 
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:3030',
-    'http://localhost:5173',
-    'http://localhost:5174',
-    "https://unisotropous-lauren-persuadably.ngrok-free.dev",
-    "https://app-5cacd864-779f-4f64-a831-73e859e46fdc.cleverapps.io",
-]
+CORS_ALLOWED_ORIGINS = CORS_ALLOWED_ORIGINS_env
 
-CSRF_TRUSTED_ORIGINS = [
-    'https://unisotropous-lauren-persuadably.ngrok-free.dev',
-    'https://app-5cacd864-779f-4f64-a831-73e859e46fdc.cleverapps.io',
-]
+CSRF_TRUSTED_ORIGINS = CSRF_TRUSTED_ORIGINS_env
 
 
-CORS_ALLOW_HEADERS = [
-    "accept",
-    "accept-encoding",
-    "authorization",
-    "content-type",
-    "dnt",
-    "origin",
-    "user-agent",
-    "x-csrftoken",
-    "x-requested-with",
-    "ngrok-skip-browser-warning", 
-]
+CORS_ALLOW_HEADERS = CORS_ALLOW_HEADERS_env
 
 # AUTH
 
@@ -206,7 +142,6 @@ CHANNEL_LAYERS = {
 }
 
 # Password validation
-# https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -225,7 +160,6 @@ AUTH_PASSWORD_VALIDATORS = [
 
 
 # Internationalization
-# https://docs.djangoproject.com/en/6.0/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
 
@@ -237,7 +171,6 @@ USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
 
