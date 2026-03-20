@@ -7,7 +7,7 @@ from rest_framework import serializers
 class RoomUser(serializers.ModelSerializer):
     class Meta:
         model = account
-        fields = ('username' , 'profileImage')
+        fields = ('id' , 'username' , 'profileImage')
 
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
