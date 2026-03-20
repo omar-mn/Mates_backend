@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Message 
+from .models import Message , FeedBackMessage
 from Users.serializers import RoomUser
 
 
@@ -23,3 +23,15 @@ class ModMessageSerializer(serializers.ModelSerializer):
         model = Message
         fields  = ('id' , 'content','sent_at' , 'user')
         read_only_fields = (['user'])
+
+
+class FeedBack(serializers.ModelSerializer):    
+    user = RoomUser(read_only=True)
+    class Meta:
+        model = FeedBackMessage
+        fields = ('id' , 'content','sent_at' , 'user')
+
+    def create(self, validated_data):
+        user = self.context['request'].user
+        message = FeedBackMessage.objects.create(user = user , **validated_data)
+        return message

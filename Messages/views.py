@@ -2,10 +2,11 @@ from rest_framework.decorators import api_view , permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from Rooms.models import Room
-from .serializers import MessageSerializer , ModMessageSerializer
+from .serializers import MessageSerializer , ModMessageSerializer , FeedBack
 from .models import Message
 from Mates.permissions import IsMessageOwner , IsRoomMember , CanDeleteMessage
 from rest_framework.pagination import PageNumberPagination
+from rest_framework import status
 
 
 # ROOM MESSAGES
@@ -79,3 +80,16 @@ def DelMessage(request , pkR , pkM):
     
     message.delete()
     return Response({"message deleted"})
+
+
+# SEND FEEDBACK MESSAGE
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def SendFeedBack(request):
+    serilaizer = FeedBack(data = request.data , context = {"request": request})
+    if serilaizer.is_valid():
+        serilaizer.save()
+        return Response({"message" : "feedback sent"} , status=status.HTTP_201_CREATED)
+    else:
+        return Response(serilaizer.errors)

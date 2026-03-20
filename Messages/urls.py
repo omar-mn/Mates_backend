@@ -6,4 +6,5 @@ urlpatterns = [
     path('send/<int:pk>/' , views.CreateMessage),
     path('mod/<int:pkR>/<int:pkM>/' , views.ModMessage),
     path('del/<int:pkR>/<int:pkM>/' , views.DelMessage),
+    path('sendfeedback/' , views.SendFeedBack),
 ]
