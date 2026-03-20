@@ -40,7 +40,7 @@ def Createroom(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def GetRoom(request,pk):
-    
+
     try:
         room = Room.objects.get(pk = pk)
     except Room.DoesNotExist:
@@ -55,13 +55,13 @@ def GetRoom(request,pk):
 @api_view(['PUT', 'DELETE' , 'PATCH'])
 @permission_classes([IsAuthenticated , CanManageRoom])
 def RoomModify(request,pk):
-    
+
     try:
         room = Room.objects.get(pk = pk)
     except Room.DoesNotExist:
         return Response({"error" : "this room DoesNotExist ya broo"})
     
-    if request.method == 'PUT' or 'PATCH':
+    if request.method == 'PATCH':
         serializer = RoomMod(room , data = request.data , partial=True)
         
         if serializer.is_valid():
