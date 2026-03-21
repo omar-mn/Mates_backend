@@ -1,81 +1,83 @@
 # 🚀 Mates Backend
 
-Backend service for **Mates**, a real-time chat and community application where users can join rooms and communicate instantly.
+Backend service for **Mates**, a real-time chat & community platform built with Django, REST APIs, and WebSockets.
 
-> ⚡ This project is built as a backend learning journey using Django, REST APIs, and WebSockets.
+> ⚡ Designed as a scalable backend system with real-time communication using Django Channels.
 
 ---
 
-## 📌 Overview
+## 🧠 Overview
 
-Mates is a chat-based platform that allows users to:
+**Mates** is a chat-driven platform where users can:
+
 - Join public or private rooms
 - Communicate in real-time
-- Build small communities and interact together
+- Build and manage small communities
 
-This backend focuses on building scalable APIs and real-time communication.
+This project focuses on building a **clean backend architecture** with:
+- RESTful APIs
+- JWT authentication
+- Real-time messaging (WebSockets)
 
 ---
 
 ## 🛠 Tech Stack
 
-- **Language:** Python
-- **Framework:** Django + Django REST Framework
-- **Database:** PostgreSQL
-- **Authentication:** JWT (dj-rest-auth)
-- **Realtime:** Django Channels (WebSockets)
+- **Python**
+- **Django & Django REST Framework**
+- **PostgreSQL**
+- **JWT Authentication (dj-rest-auth)**
+- **Django Channels (WebSockets)**
 
 ---
 
-## ✨ Features
+## ⚡ Core Features
 
-### ✅ Implemented (MVP)
-- User authentication (Register / Login)
-- JWT-based authentication
-- Create & join chat rooms (public / private)
-- Real-time messaging using WebSockets
-- Room-based chat system
-- Retrieve messages per room
+### ✅ MVP Features
 
-### 🚧 Coming Soon
-- One-to-one chat
-- User profile images
+- 🔐 Authentication (Register / Login)
+- 🔑 JWT-based session management
+- 🏠 Public & private chat rooms
+- 👥 Room membership system
+- 💬 Real-time messaging via WebSockets
+- 📜 Message history per room
+
+---
+
+## 🚧 Planned Features
+
+- 1-to-1 private chat
+- User profile & avatars
 - Email verification
-- Hidden/private rooms enhancements
-- Online members indicator
-- Emojis, reactions, and stickers
+- Online users indicator
+- Reactions & emojis
 - File uploads
 - Notifications system
 
 ---
 
-## 🧱 Project Structure
+## 🧱 Architecture
+
+The project follows a modular structure:
 
 ```
 backend/
-│
-├── Mates/         # Core project settings
-├── Users/         # Custom user model & auth logic
-├── Rooms/         # Rooms & memberships
-├── Messages/      # Messaging + WebSocket consumers
-├── media/         # Uploaded files
-├── static/        # Static files
-│
-├── manage.py
-├── requirements.txt
-└── build.sh
+├── Mates/        # Core settings
+├── Users/        # Authentication & custom user model
+├── Rooms/        # Room logic & memberships
+├── Messages/     # Messaging + WebSocket consumers
 ```
 
-### 🔹 Architecture
+### 🔹 Design Approach
 
-- **Models** → Database structure  
-- **Serializers** → Data formatting  
-- **Views (API Views)** → HTTP endpoints  
-- **Consumers** → WebSocket handling  
+- **Models** → Database layer  
+- **Serializers** → Data transformation  
+- **API Views** → REST endpoints  
+- **Consumers** → Real-time WebSocket handling  
 
 ---
 
-## 🌐 API Endpoints
+## 🌐 API Overview
 
 ### 🔐 Auth
 - `POST /api/auth/registration/`
@@ -88,15 +90,12 @@ backend/
 ### 📨 Messages
 - `GET /api/messages/<room_id>/`
 
-### ⚡ WebSocket
+---
+
+## ⚡ WebSocket Usage
 
 ```
 ws://{base_url}/ws/message/<room_id>/?token=<JWT_TOKEN>
-```
-
-Example:
-```
-ws://localhost:8000/ws/message/3/?token=your_token_here
 ```
 
 ---
@@ -104,9 +103,9 @@ ws://localhost:8000/ws/message/3/?token=your_token_here
 ## 🗄 Database Models
 
 - **Account** → Custom user model  
-- **Room** → Chat rooms (public/private)  
-- **Membership** → Join/leave system  
-- **JoinRequest** → Room access requests  
+- **Room** → Chat rooms  
+- **Membership** → Access control  
+- **JoinRequest** → Private room requests  
 - **Message** → Chat messages  
 
 ---
@@ -114,50 +113,37 @@ ws://localhost:8000/ws/message/3/?token=your_token_here
 ## ⚙️ Run Locally
 
 ```bash
-git clone https://github.com/omar-mn/Mates_backend.git
-cd Mates_backend
+git clone https://github.com/omar-mn/mates-backend.git
+cd mates-backend
 
 pip install -r requirements.txt
 python manage.py migrate
 python manage.py runserver
 ```
 
-> ⚠️ Make sure PostgreSQL is running and configured correctly in your settings.
+> ⚠️ Make sure PostgreSQL is configured properly.
 
 ---
 
-## 📡 API Docs
+## 📡 API Documentation
 
-Postman Workspace:  
-https://sudoers-3102.postman.co/workspace/5ea84f5f-1961-427e-8ca4-98dc629e550b
+👉 https://sudoers-3102.postman.co/workspace/5ea84f5f-1961-427e-8ca4-98dc629e550b
 
 ---
 
 ## 📊 Project Status
 
-🚧 **Current Status:** MVP
-
-### ✔️ Completed
-- Authentication system
-- Room system (public/private)
-- Real-time messaging
-
-### 🔜 Planned
-- Profile system
-- Email verification
-- Reactions & emojis
-- Online presence
-- Performance improvements
+🚧 **MVP — actively improving**
 
 ---
 
-## 🔗 Related Repositories
+## 🔗 Related Projects
 
-- Backend: https://github.com/omar-mn/Mates_backend  
-- Frontend: https://github.com/omar-mn/Mates-Front  
+- Frontend: https://github.com/omar-mn/mates-frontend
 
 ---
 
-## 💡 Author
+## 👨‍💻 Author
 
-Built by Omar Ali as part of a backend learning journey 🚀
+Built by **Omar Ali**   
+Fullstack Developer → Future DevOps Engineer ☁️
