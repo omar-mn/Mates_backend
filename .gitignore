@@ -68,7 +68,7 @@ env.bak/
 venv.bak/
 
 src/Mates/envVariables*
-src/Mates/envVariables*
+.src/Mates/envVariables*
 
 
 .src/media/
