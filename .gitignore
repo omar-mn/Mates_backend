@@ -67,13 +67,12 @@ ENV/
 env.bak/
 venv.bak/
 
-Mates/envVariables*
-*/migrations/*
+src/Mates/envVariables*
+src/Mates/envVariables*
 
-Messages/feedback*
 
-.Mates/media/
-Mates/media/
+.src/media/
+src/media/
 
 .Mates/static/
 Mates/static/
