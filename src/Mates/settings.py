@@ -1,5 +1,5 @@
 import os
-import dj_database_url
+# import dj_database_url
 from pathlib import Path
 from datetime import timedelta
 from .envVariables import DATABASES_env , SECRET_KEY_env , CORS_ALLOWED_ORIGINS_env , CSRF_TRUSTED_ORIGINS_env , CORS_ALLOW_HEADERS_env
