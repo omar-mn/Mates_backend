@@ -1,0 +1,11 @@
+version: "3"
+services:
+  django:
+    build: 
+      context: .
+      target: dev
+    volumes:
+      - /src/:/mates_backend/ssrc:ro
+    environment:
+      - ENV=dev
+      - PYTHONUNBUFFERED=1

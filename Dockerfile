@@ -1,10 +1,19 @@
-FROM python:3.12.3
+FROM python:3.12.3-alpine as base
 WORKDIR /mates_backend
-COPY requirements.txt .
 
-RUN pip install -r requirements.txt
 
+FROM base as dev
+COPY requirements/requirements.dev.txt .
+RUN pip install -r requirements.dev.txt
 COPY . .
-EXPOSE 8000
+RUN chmod +x build.sh
+CMD [ "./build.sh" ]
 
-CMD [ "python" , "manage.py" , "runserver" ]ٍ
+
+FROM base as prod
+COPY requirements/requirements.prod.txt .
+RUN pip install -r requirements.prod.txt
+COPY build.sh .
+RUN chmod +x build.sh
+COPY . .
+CMD [ "sh","./build.sh" ]

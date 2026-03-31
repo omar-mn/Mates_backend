@@ -1,8 +1,7 @@
 import os
 from django.core.asgi import get_asgi_application
 
-settings_module = 'Mates.deploy_settings' if 'RENDER_EXTERNAL_HOSTNAME' in os.environ else 'Mates.settings'
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', settings_module)
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', f"Mates.settings.{os.getenv('ENV', 'dev')}")
 
 django_asgi_app = get_asgi_application()
 
