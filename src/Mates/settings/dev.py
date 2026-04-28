@@ -6,7 +6,6 @@ from datetime import timedelta
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
-
 # ENV VARS
 
 env = environ.Env() 
@@ -26,7 +25,6 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
-    'daphne',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -41,6 +39,7 @@ INSTALLED_APPS = [
     'Users',
     'Messages',
     'channels',
+    'django_celery_results',
 
 
     # dj-rest-auth
@@ -129,6 +128,8 @@ CORS_ALLOWED_ORIGINS = [
     'http://localhost:5174',
     "https://unisotropous-lauren-persuadably.ngrok-free.dev",
     "https://app-5cacd864-779f-4f64-a831-73e859e46fdc.cleverapps.io",
+    "http://localhost",
+    "http://react",
 ]
 
 CSRF_TRUSTED_ORIGINS = [
@@ -146,7 +147,7 @@ CORS_ALLOW_HEADERS = [
     "user-agent",
     "x-csrftoken",
     "x-requested-with",
-    "ngrok-skip-browser-warning", 
+    "ngrok-skip-browser-warning",
 ]
 
 # AUTH
@@ -164,14 +165,34 @@ ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_UNIQUE_EMAIL = True
 SITE_ID = 2
 
-# EMAIL
+# EMAIL_BACKEND                       = 'django.core.mail.backends.console.EmailBackend'
+# ACCOUNT_AUTHENTICATION_METHOD       = 'email'  
+# ACCOUNT_EMAIL_REQUIRED              = True           
+# ACCOUNT_UNIQUE_EMAIL                = True
+# SITE_ID                             = 2
+# ACCOUNT_EMAIL_VERIFICATION          = "mandatory"
+# ACCOUNT_USERNAME_REQUIRED           = False
 
+# # EMAIL
+
+# EMAIL_BACKEND                       = "django.core.mail.backends.smtp.EmailBackend"
+# EMAIL_HOST                          = "smtp.gmail.com"
+# EMAIL_PORT                          = 587
+# EMAIL_USE_TLS                       = True
+
+# EMAIL_HOST_USER                     = env('EMAIL_USER')
+# EMAIL_HOST_PASSWORD                 = env('EMAIL_PASS')
+
+# DEFAULT_FROM_EMAIL                  = "Mates <om3309967@gmail.com>"
 
 # CHANNELS
 
 CHANNEL_LAYERS = {
     "default": {
-        "BACKEND": "channels.layers.InMemoryChannelLayer",
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [os.environ.get("REDIS_URL", "redis://redis:6379/1")],
+        },
     },
 }
 
@@ -216,3 +237,9 @@ MEDIA_URL = 'media/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR , 'media')
 
+
+
+# CELERY
+
+CELERY_BROKER_URL = os.environ.get("CELERY_BROKER", "redis://redis:6379/0")
+CELERY_RESULT_BACKEND = 'django-db'

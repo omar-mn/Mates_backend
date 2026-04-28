@@ -1,5 +1,5 @@
 #!/bin/sh
 
-python src/manage.py makemigrations
-python src/manage.py migrate
-python src/manage.py runserver 0.0.0.0:8000
+python manage.py makemigrations
+python manage.py migrate
+gunicorn Mates.asgi:application -k uvicorn.workers.UvicornWorker -w 4 --bind 0.0.0.0:8000
