@@ -1,10 +1,23 @@
-FROM python:3.12.3
-WORKDIR /mates_backend
-COPY requirements.txt .
+FROM python:3.11-alpine AS base
 
-RUN pip install -r requirements.txt
+WORKDIR /app
 
-COPY . .
-EXPOSE 8000
+COPY requirements/requirements.dev.txt .
 
-CMD [ "python" , "manage.py" , "runserver" ]ٍ
+RUN pip wheel --no-cache-dir --no-deps --wheel-dir /app/wheels -r requirements.dev.txt
+
+FROM python:3.11-alpine
+
+WORKDIR /app
+
+COPY --from=base /app/wheels /wheels
+COPY --from=base /app/requirements.dev.txt .
+
+RUN pip install --no-cache /wheels/*
+RUN pip install uvicorn[standard]
+
+COPY ./src ./src
+COPY build.sh /app/src/build.sh
+
+RUN chmod +x /app/src/build.sh
+CMD ["./build.sh"]

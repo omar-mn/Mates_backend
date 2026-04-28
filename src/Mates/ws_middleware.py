@@ -1,7 +1,6 @@
 from channels.db import database_sync_to_async
 from Users.models import account
 from django.contrib.auth.models import AnonymousUser
-from Mates.settings import SECRET_KEY
 from rest_framework_simplejwt.tokens import AccessToken
 
 @database_sync_to_async
