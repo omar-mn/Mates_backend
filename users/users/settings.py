@@ -12,8 +12,8 @@ env = environ.Env()
 
 ENV = os.getenv("ENV", "dev")  
 
-environ.Env.read_env(os.path.join(BASE_DIR, f".env.{ENV}"))
-
+if os.path.exists(os.path.join(BASE_DIR, f".env.{ENV}")):
+    environ.Env.read_env(os.path.join(BASE_DIR, f".env.{ENV}"))
 
 SECRET_KEY = env('SECRET_KEY')
 
@@ -93,10 +93,10 @@ DATABASES = {
 
 # CELERY
 
-CELERY_BROKER_URL = "redis://redis:6379/0"
+CELERY_BROKER_URL = "redis://redis-svc:6379/0"
 CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
-CELERY_RESULT_BACKEND = "redis://redis:6379/1"
+CELERY_RESULT_BACKEND = "redis://redis-svc:6379/1"
 
 
 #custom user model

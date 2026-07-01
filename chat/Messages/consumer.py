@@ -4,7 +4,7 @@ from channels.db import database_sync_to_async
 from Rooms.models import Room, MemberShip
 from .models import Message
 from .serializers import MessageSerializer
-
+from rest_framework.response import Response
 
 class MessageConsumer(AsyncWebsocketConsumer):
 
@@ -13,7 +13,7 @@ class MessageConsumer(AsyncWebsocketConsumer):
 
         if not self.user.is_authenticated:
             await self.close()
-            return
+            return Response({'error' : 'fuck off bitchy'})
 
         self.room_id = self.scope["url_route"]["kwargs"]["room_id"]
         self.room_group_name = f"room_{self.room_id}"
@@ -22,7 +22,7 @@ class MessageConsumer(AsyncWebsocketConsumer):
 
         if not is_member:
             await self.close()
-            return
+            return Response({'error' : 'fuck off bitchy'})
 
         await self.channel_layer.group_add(
             self.room_group_name,
@@ -79,7 +79,7 @@ class MessageConsumer(AsyncWebsocketConsumer):
     async def chat_message(self, event):
         if not self.user.is_authenticated:
             await self.close()
-            return
+            return Response("fuck off")
         await self.send(text_data=json.dumps({
             "type": "chat_message",
             "message": event["message"]
