@@ -22,9 +22,12 @@ jobs:
     runs-on: ubuntu-latest
     environment: prod
     env:
-      SECRET_KEY:   ${{secrets.SECRET_KEY}}
-      # EMAIL_USER: ${{secrets.EMAIL_USER}}
-      # EMAIL_PASS: ${{secrets.EMAIL_PASS}}
+      SECRET_KEY:         ${{secrets.SECRET_KEY}}
+      POSTGRES_DB:        ${{secrets.POSTGRES_DB}}
+      POSTGRES_USER:      ${{secrets.POSTGRES_USER}}
+      POSTGRES_PASSWORD:  ${{secrets.POSTGRES_PASSWORD}}
+      # EMAIL_USER:       ${{secrets.EMAIL_USER}}
+      # EMAIL_PASS:       ${{secrets.EMAIL_PASS}}
 
     steps:
       - name: cheackout
