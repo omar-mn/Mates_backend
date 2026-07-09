@@ -35,7 +35,7 @@ jobs:
 
       - name: env vars check
         run: |
-          python3
+          python
           import os
           import pprint
           pprint.pprint(dict(os.environ), width = 1)
