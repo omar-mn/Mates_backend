@@ -1,23 +1,37 @@
-name: users ci/cd pipeline
+name: users ci pipeline
 
 on:
   push:
     branches:
       - dev
-      - main
     paths:
       - "users/**"
 
 jobs:
+  test:
+    services:
+      postgres:
+        image: postgres:15-alpine
+        env:
+          POSTGRES_DB:        ${{secrets.POSTGRES_DB}}
+          POSTGRES_USER:      ${{secrets.POSTGRES_USER}}
+          POSTGRES_PASSWORD:  ${{secrets.POSTGRES_PASSWORD}}
+        ports:
+          - 5432:5432
 
-  tesst:
     runs-on: ubuntu-latest
+    environment: prod
+    env:
+      SECRET_KEY:   ${{secrets.SECRET_KEY}}
+      # EMAIL_USER: ${{secrets.EMAIL_USER}}
+      # EMAIL_PASS: ${{secrets.EMAIL_PASS}}
+
     steps:
       - name: cheackout
         uses: actions/checkout@v4.2.2
 
       - name: reqs install
-        run: pip install -r users/requirements.txt
+        run:  pip install -r users/requirements.txt
 
       - name: run tests
-        run: pytest
+        run: cd users && pytest
