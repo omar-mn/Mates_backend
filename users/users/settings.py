@@ -3,14 +3,19 @@ import environ
 from pathlib import Path
 from datetime import timedelta
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+# كومينت عشوائي عشان نتيست الزفت
+# اااعععععععععععععع
+# تبا مخدتش بالي
+# نسيت اعدل هنا
+# الداتابيز كانت زعلانة
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # ENV VARS
 
 env = environ.Env() 
 
-ENV = os.getenv("ENV", "dev")  
+ENV = os.getenv("ENV", "local")
 
 if os.path.exists(os.path.join(BASE_DIR, f".env.{ENV}")):
     environ.Env.read_env(os.path.join(BASE_DIR, f".env.{ENV}"))
@@ -215,12 +220,12 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 
-# STATIC_URL = 'static/'
+STATIC_URL = 'static/'
 
-# STATICFILES_DIRS = [
-#     os.path.join(BASE_DIR,'static')
-# ]
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR,'static')
+]
 
-# MEDIA_URL = 'media/'
+MEDIA_URL = 'media/'
 
-# MEDIA_ROOT = os.path.join(BASE_DIR , 'media')
+MEDIA_ROOT = os.path.join(BASE_DIR , 'media')
