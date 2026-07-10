@@ -29,11 +29,10 @@ jobs:
           tags: 3omar0/mates-users:${{vars.IMAGE_VERSION}}
 
       - name: Deploy to Server
-        uses: appleboy/ssh-action@v1
+        uses: appleboy/ssh-action@v1  
         with:
           host:         ${{ secrets.SSH_HOST }}
           username:     ${{ secrets.SSH_USER }}
           key:          ${{ secrets.SSH_PRIVATE_KEY }}
-          known_hosts:  ${{ secrets.SSH_KNOWN_HOSTS }}
           script: |
             docker compose up --build users-service

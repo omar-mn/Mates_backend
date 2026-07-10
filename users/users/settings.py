@@ -4,6 +4,7 @@ from pathlib import Path
 from datetime import timedelta
 
 # دا احنا لسة مطولين
+# كلاكيت تاني مرة
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
