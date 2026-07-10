@@ -33,10 +33,10 @@ jobs:
         with:
           authkey: ${{ secrets.TS_AUTHKEY }}
 
-      - name: Check Tailscale
-        run: |
-          tailscale status
-          tailscale ping 100.110.236.126
+      # - name: Check Tailscale
+      #   run: |
+      #     tailscale status
+      #     tailscale ping 100.110.236.126
 
       - name: Deploy to Server
         uses: appleboy/ssh-action@v1  
