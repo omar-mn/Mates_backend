@@ -6,7 +6,7 @@ on:
       - main
       - development
     paths:
-      - "backend/chat.**"
+      - "backend/chat/**"
 
 jobs:
   test:
