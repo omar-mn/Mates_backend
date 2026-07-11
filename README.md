@@ -71,9 +71,7 @@ Each backend service owns its own database while Redis is shared between Celery 
 
 Prometheus continuously scrapes infrastructure and application metrics while Grafana provides monitoring dashboards.
 
-> 📷 Replace with your Architecture Diagram
-
-<img src="./assets/architecture.png">
+<img src="./assets/mates-arch.png">
 
 ---
 
@@ -190,7 +188,7 @@ Django Prometheus Exporters
 - Disk Metrics
 - Container Metrics
 
-📷 **Screenshot**
+<img src="./assets/node-dashboard.png">
 
 ```
 assets/node-dashboard.png
@@ -207,7 +205,9 @@ Metrics collected through **cAdvisor**
 - Network
 - File System
 
-📷 **Screenshot**
+<img src="./assets/cadvisor-dashboard-1.png">
+
+<img src="./assets/cadvisor-dashboard-2.png">
 
 ```
 assets/cadvisor-dashboard.png
@@ -227,7 +227,7 @@ Metrics include
 - Waiting
 - Accepted Connections
 
-📷 **Screenshot**
+<img src="./assets/nginx-dashboard.png">
 
 ```
 assets/nginx-dashboard.png
@@ -246,7 +246,7 @@ Metrics include
 - Request Latency
 - Database Operations
 
-📷 **Screenshot**
+<img src="./assets/django-dashboard.png">
 
 ```
 assets/django-dashboard.png
@@ -270,7 +270,7 @@ Deployment through SSH is already prepared inside the workflows and can be enabl
 
 ---
 
-📷 **Workflow Screenshot**
+<img src="./assets/github-actions.png">
 
 ```
 assets/github-actions.png
@@ -314,7 +314,7 @@ ws://host/ws/chat/<room_id>/
 
 ## Login
 
-📷
+<img src="./assets/login.png">
 
 ```
 assets/login.png
@@ -324,7 +324,7 @@ assets/login.png
 
 ## Rooms
 
-📷
+<img src="./assets/rooms.png">
 
 ```
 assets/rooms.png
@@ -334,7 +334,7 @@ assets/rooms.png
 
 ## Chat
 
-📷
+<img src="./assets/chat.png">
 
 ```
 assets/chat.png
@@ -344,7 +344,7 @@ assets/chat.png
 
 ## Profile
 
-📷
+<img src="./assets/profile.png">
 
 ```
 assets/profile.png
